@@ -1,0 +1,36 @@
+from telethon import TelegramClient, events
+import asyncio
+import time
+
+# Replace these with your Telegram API credentials
+API_ID = 'YOUR_API_ID'
+API_HASH = 'YOUR_API_HASH'
+
+# Your phone number (for initial authentication)
+PHONE_NUMBER = 'YOUR_PHONE_NUMBER'
+
+# Bot username (handle)
+BOT_USERNAME = 'zoop_app_bot'  # Change this if the bot's username is different
+
+# Create a Telegram client
+client = TelegramClient('session_name', API_ID, API_HASH)
+
+async def send_commands():
+    """Automates the sending of spin and daily bonus commands."""
+    async with client:
+        while True:
+            print("[+] Sending /spin command...")
+            await client.send_message(BOT_USERNAME, '/spin')
+            time.sleep(5)  # Short delay to avoid spamming
+
+            print("[+] Sending /bonus or /daily command...")
+            await client.send_message(BOT_USERNAME, '/bonus')  # Try /daily if /bonus doesn't work
+            time.sleep(5)
+
+            # Wait 24 hours before claiming the bonus again
+            print("[✓] Waiting for 24 hours before the next claim...")
+            await asyncio.sleep(86400)  # 24 hours
+
+# Start the client and run the function
+with client:
+    client.loop.run_until_complete(send_commands())
